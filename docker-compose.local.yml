@@ -1,0 +1,64 @@
+x-logging: &arena-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  db:
+    image: postgres:15-alpine
+    logging: *arena-logging
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mindarena}
+      POSTGRES_USER: ${POSTGRES_USER:-mindarena_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Preencha POSTGRES_PASSWORD no arquivo .env}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    volumes:
+      - pgdata_local:/var/lib/postgresql/data
+    networks:
+      - arena_net
+
+  backend:
+    build: ./backend
+    logging: *arena-logging
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-mindarena}
+      DATABASE_USERNAME: ${POSTGRES_USER:-mindarena_user}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Preencha POSTGRES_PASSWORD no arquivo .env}
+      ORGANIZER_PASSWORD: ${ORGANIZER_PASSWORD:?Preencha ORGANIZER_PASSWORD no arquivo .env}
+      DEVICE_SECRET: ${DEVICE_SECRET:?Preencha DEVICE_SECRET no arquivo .env}
+      ALLOWED_ORIGINS: http://localhost:8081,http://127.0.0.1:8081
+      SEED_DEMO_QUIZ: ${SEED_DEMO_QUIZ:-true}
+      GAME_RETENTION_DAYS: ${GAME_RETENTION_DAYS:-30}
+      MAX_ACTIVE_GAMES: ${MAX_ACTIVE_GAMES:-20}
+      MAX_STORED_GAMES: ${MAX_STORED_GAMES:-5000}
+      MAX_QUIZZES: ${MAX_QUIZZES:-500}
+      TRUST_PROXY: "true"
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx384m"
+    networks:
+      - arena_net
+
+  frontend:
+    build: ./frontend
+    logging: *arena-logging
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:8081:80"
+    networks:
+      - arena_net
+
+volumes:
+  pgdata_local:
+
+networks:
+  arena_net:
+    driver: bridge

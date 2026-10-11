@@ -1,0 +1,92 @@
+x-logging: &arena-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: mindarena_db
+    logging: *arena-logging
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mindarena}
+      POSTGRES_USER: ${POSTGRES_USER:-mindarena_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD com a senha atual ou uma senha forte do banco}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    mem_limit: 512m
+    cpus: 1.0
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - arena_net
+
+  backend:
+    image: mind-arena-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mindarena_backend
+    logging: *arena-logging
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-mindarena}
+      DATABASE_USERNAME: ${POSTGRES_USER:-mindarena_user}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD com a senha atual ou uma senha forte do banco}
+      ORGANIZER_PASSWORD: ${ORGANIZER_PASSWORD:?Defina uma senha de organizador com pelo menos 12 caracteres}
+      DEVICE_SECRET: ${DEVICE_SECRET:?Defina DEVICE_SECRET aleatorio com pelo menos 32 caracteres}
+      ALLOWED_ORIGINS: https://${DOMAIN_NAME:?Defina DOMAIN_NAME com seu dominio sem protocolo ou caminho}
+      SEED_DEMO_QUIZ: ${SEED_DEMO_QUIZ:-true}
+      MAX_ACTIVE_GAMES: ${MAX_ACTIVE_GAMES:-20}
+      MAX_STORED_GAMES: ${MAX_STORED_GAMES:-5000}
+      MAX_QUIZZES: ${MAX_QUIZZES:-500}
+      GAME_RETENTION_DAYS: ${GAME_RETENTION_DAYS:-30}
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx384m"
+      TRUST_PROXY: "true"
+    mem_limit: 640m
+    cpus: 1.0
+    networks:
+      - arena_net
+
+  frontend:
+    image: mind-arena-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_BACKEND_URL=
+        - VITE_WS_URL=
+    container_name: mindarena_frontend
+    logging: *arena-logging
+    mem_limit: 128m
+    cpus: 0.5
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME:?Defina DOMAIN_NAME com seu dominio sem protocolo ou caminho}
+      NGINX_ENVSUBST_FILTER: ^DOMAIN_NAME$
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ./nginx.prod.conf:/etc/nginx/templates/default.conf.template:ro
+    networks:
+      - arena_net
+
+volumes:
+  pgdata:
+
+networks:
+  arena_net:
+    driver: bridge

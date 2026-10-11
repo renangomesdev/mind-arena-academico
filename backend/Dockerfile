@@ -1,0 +1,16 @@
+FROM eclipse-temurin:17-jdk-alpine AS build
+WORKDIR /app
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
+COPY src src
+RUN ./mvnw package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+RUN addgroup -S arena && adduser -S arena -G arena
+WORKDIR /app
+COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
+USER arena
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: Mind Arena
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/mindarena}
+    username: ${DATABASE_USERNAME:mindarena_user}
+    password: ${DATABASE_PASSWORD:mindarena_password}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      connection-init-sql: "SET lock_timeout = '2s'"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 5
+    max-connections: 500
+    accept-count: 100
+
+arena:
+  allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+  seed-demo-quiz: ${SEED_DEMO_QUIZ:true}
+  trust-proxy: ${TRUST_PROXY:false}
+  organizer-password: ${ORGANIZER_PASSWORD:}
+  device-secret: ${DEVICE_SECRET:}
+  max-active-games: ${MAX_ACTIVE_GAMES:20}
+  max-stored-games: ${MAX_STORED_GAMES:5000}
+  max-quizzes: ${MAX_QUIZZES:500}
+  game-retention-days: ${GAME_RETENTION_DAYS:30}
+
+logging:
+  level:
+    org.springframework.web: INFO
+    com.mindarena: DEBUG

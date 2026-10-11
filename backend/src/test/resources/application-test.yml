@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:mindarena-tests;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+    hikari:
+      connection-init-sql: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+logging:
+  level:
+    com.mindarena: INFO
+arena:
+  organizer-password: testing-organizer-password
+  device-secret: testing-only-device-secret-at-least-32-chars
+  max-active-games: 200

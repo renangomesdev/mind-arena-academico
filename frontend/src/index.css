@@ -1,0 +1,268 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: #0f0e0c;
+    color: white;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245, 197, 24, 0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(212, 160, 23, 0.05), transparent);
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .text-gradient-gold {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, #ffd740, #f5c518, #d4a017);
+  }
+  .text-gradient-fire {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, #ff6b35, #f5c518, #ffd740);
+  }
+  .bg-glass {
+    background-color: rgba(26, 24, 22, 0.8);
+    backdrop-filter: blur(12px);
+  }
+  .card-arena {
+    background: linear-gradient(145deg, rgba(26, 24, 22, 0.95), rgba(37, 35, 32, 0.95));
+    border-radius: 1rem;
+    border: 1px solid rgba(51, 48, 43, 0.5);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -2px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+  .btn-primary {
+    background-image: linear-gradient(to right, #f5c518, #d4a017);
+    color: #0f0e0c;
+    font-weight: 900;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(245, 197, 24, 0.15);
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 10px 25px -3px rgba(245, 197, 24, 0.3);
+    transform: scale(1.02);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary:disabled:hover {
+    transform: scale(1);
+  }
+  .btn-secondary {
+    background-color: #252320;
+    color: white;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(72, 68, 64, 0.5);
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    background-color: #33302b;
+    border-color: rgba(166, 124, 0, 0.3);
+  }
+  .bg-gradient-gold-metallic {
+    background: linear-gradient(135deg, #ffd740 0%, #f5c518 45%, #b48010 75%, #d4a017 100%);
+  }
+  .bg-gradient-bronze-metallic {
+    background: linear-gradient(135deg, #f59e0b 0%, #b45309 50%, #78350f 100%);
+  }
+  .card-arena-beveled {
+    background: linear-gradient(155deg, rgba(32, 29, 26, 0.95) 0%, rgba(18, 16, 14, 0.98) 100%);
+    border: 1px solid rgba(245, 197, 24, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.7),
+      0 12px 28px -6px rgba(0, 0, 0, 0.75);
+  }
+  .sheen-overlay {
+    position: relative;
+    overflow: hidden;
+  }
+  .sheen-overlay::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -150%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      60deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 70%
+    );
+    transition: transform 0.6s ease-out;
+    pointer-events: none;
+  }
+  .sheen-overlay:hover::after {
+    transform: translateX(100%);
+  }
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible,
+  .input-arena:focus-visible {
+    outline: 2px solid #ffd740 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(245, 197, 24, 0.35) !important;
+  }
+  .input-arena {
+    width: 100%;
+    background-color: #0f0e0c;
+    border: 1px solid rgba(72, 68, 64, 0.5);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    color: white;
+    transition: all 0.2s;
+  }
+  .input-arena::placeholder {
+    color: #a8a29e;
+    opacity: 0.85;
+  }
+  .input-arena:focus {
+    outline: none;
+    border-color: rgba(245, 197, 24, 0.6);
+    box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.2);
+  }
+  .glow-gold {
+    box-shadow: 0 0 30px rgba(245, 197, 24, 0.15), 0 0 60px rgba(245, 197, 24, 0.05);
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #1a1816;
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #484440;
+    border-radius: 9999px;
+  }
+
+  @keyframes screenShake {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    15% { transform: translate(-6px, 4px) rotate(-1deg); }
+    30% { transform: translate(5px, -5px) rotate(1.5deg); }
+    45% { transform: translate(-4px, 3px) rotate(-1deg); }
+    60% { transform: translate(4px, -2px) rotate(0.5deg); }
+    75% { transform: translate(-2px, 2px) rotate(-0.5deg); }
+    90% { transform: translate(1px, -1px) rotate(0deg); }
+  }
+  .animate-screen-shake {
+    animation: screenShake 0.4s ease-in-out infinite;
+  }
+
+  @keyframes sandSwirl {
+    0% { transform: rotate(0deg) scale(0.9); opacity: 0.3; }
+    50% { transform: rotate(180deg) scale(1.15); opacity: 0.65; }
+    100% { transform: rotate(360deg) scale(0.9); opacity: 0.3; }
+  }
+  .animate-sand-swirl {
+    animation: sandSwirl 3s linear infinite;
+  }
+
+  @keyframes sandFloat {
+    0% { transform: translateY(0px) translateX(0px); opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(-40px) translateX(25px); opacity: 0; }
+  }
+  .animate-sand-float {
+    animation: sandFloat 1.2s ease-in-out infinite;
+  }
+
+  /* ──── ACESSIBILIDADE UNIVERSAL (A11Y) ──── */
+  html.a11y-font-large {
+    font-size: 125%;
+  }
+  html.a11y-font-xlarge {
+    font-size: 145%;
+  }
+
+  @keyframes slideLeft {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  .animate-slide-left {
+    animation: slideLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Redução de Movimento - Isola spinners funcionais essenciais */
+  html.a11y-reduced-motion *:not(.animate-spin):not(.animate-spin *),
+  html.a11y-reduced-motion *:not(.animate-spin):not(.animate-spin *)::before,
+  html.a11y-reduced-motion *:not(.animate-spin):not(.animate-spin *)::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.05s !important;
+  }
+  html.a11y-reduced-motion .animate-screen-shake,
+  html.a11y-reduced-motion .animate-sand-swirl,
+  html.a11y-reduced-motion .animate-sand-float,
+  html.a11y-reduced-motion .animate-ping,
+  html.a11y-reduced-motion .animate-pulse,
+  html.a11y-reduced-motion .animate-bounce,
+  html.a11y-reduced-motion .animate-slide-left {
+    animation: none !important;
+    transform: none !important;
+  }
+  /* Garantir que spinners de progresso essenciais continuem girando perfeitamente */
+  html.a11y-reduced-motion .animate-spin {
+    animation: spin 1s linear infinite !important;
+  }
+
+  /* Alto Contraste */
+  html.a11y-high-contrast body {
+    background-color: #000000 !important;
+    background-image: none !important;
+  }
+  html.a11y-high-contrast .card-arena,
+  html.a11y-high-contrast .card-arena-beveled {
+    background: #050505 !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: none !important;
+  }
+  html.a11y-high-contrast .text-gradient-gold {
+    -webkit-text-fill-color: #facc15 !important;
+    color: #facc15 !important;
+    background: none !important;
+  }
+  html.a11y-high-contrast button:focus-visible,
+  html.a11y-high-contrast input:focus-visible {
+    outline: 3px solid #facc15 !important;
+    outline-offset: 3px !important;
+  }
+}
+
+/* Suporte nativo a Preferência de Movimento Reduzido do Sistema */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.animate-spin):not(.animate-spin *),
+  *:not(.animate-spin):not(.animate-spin *)::before,
+  *:not(.animate-spin):not(.animate-spin *)::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.05s !important;
+  }
+}
+
+
